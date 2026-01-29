@@ -9,8 +9,9 @@
 
         body {
             font-family: 'Kanit', sans-serif;
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                        url('https://script.google.com/macros/s/AKfycbwLCJONncP9alqhXx3j5kgo2-XEJlqMScaIXDAu2tdFSiGuoKvxpla9aJQfbvqT9x-3/exec');
+            /* แก้ไขจุดบกพร่องที่ 2: เปลี่ยนจากลิงก์ Script เป็นลิงก์รูปภาพป่าจริงๆ */
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                        url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -27,67 +28,69 @@
         @keyframes leaf-fall {
             0% { transform: translateY(-10%) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
-            90% { opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
-        .leaf { position: absolute; top: -10%; color: #2d5a27; font-size: 1.2em; user-select: none; z-index: 1; animation: leaf-fall linear infinite; }
+        .leaf { position: absolute; top: -10%; color: #a2cf6e; font-size: 1.5em; user-select: none; z-index: 1; animation: leaf-fall linear infinite; }
 
         .container {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
             padding: 35px;
             border-radius: 30px;
-            border: 2px solid rgba(139, 195, 74, 0.3);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            width: 100%;
+            border: 1px solid rgba(162, 207, 110, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            width: 90%;
             max-width: 400px;
             z-index: 10;
             color: white;
         }
 
-        h2 { text-align: center; color: #a2cf6e; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 25px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #e0e0e0; }
+        h2 { text-align: center; color: #a2cf6e; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #a2cf6e; }
         
         input {
-            width: 100%; padding: 12px; border: none; border-bottom: 2px solid #5d8a39;
-            border-radius: 8px; box-sizing: border-box; background: rgba(255, 255, 255, 0.9);
-            color: #1b3022; transition: 0.3s;
+            width: 100%; padding: 12px; border: 1px solid #5d8a39;
+            border-radius: 10px; box-sizing: border-box; background: rgba(255, 255, 255, 0.1);
+            color: white; transition: 0.3s;
         }
+        input::placeholder { color: rgba(255,255,255,0.5); }
+        input:focus { outline: none; border-color: #a2cf6e; background: rgba(255,255,255,0.2); }
 
         button {
-            width: 100%; padding: 14px; background: linear-gradient(135deg, #2d5a27 0%, #4caf50 100%);
+            width: 100%; padding: 14px; background: #4caf50;
             color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 18px; font-weight: bold;
+            margin-top: 15px; transition: 0.3s;
         }
+        button:hover { background: #45a049; transform: scale(1.02); }
 
         .admin-trigger {
-            position: fixed; bottom: 20px; right: 20px; background: rgba(0, 0, 0, 0.3);
+            position: fixed; bottom: 20px; right: 20px; background: rgba(0, 0, 0, 0.5);
             color: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 12px; z-index: 100;
         }
-        .admin-trigger:hover { background: rgba(0, 0, 0, 0.6); color: white; }
     </style>
 </head>
 <body>
 
-    <div class="leaf" style="left:5%; animation-duration:7s;">🌿</div>
-    <div class="leaf" style="left:45%; animation-duration:8s;">🌱</div>
-    <div class="leaf" style="left:85%; animation-duration:9s;">🍃</div>
+    <div class="leaf" style="left:10%; animation-duration:7s;">🌿</div>
+    <div class="leaf" style="left:30%; animation-duration:10s;">🍃</div>
+    <div class="leaf" style="left:70%; animation-duration:8s;">🌱</div>
 
     <div class="container">
         <h2>🌳 ลงทะเบียนศิษย์เก่า 🌳</h2>
         <form id="alumniForm" onsubmit="saveData(event)">
             <div class="form-group">
                 <label>ชื่อ-นามสกุล</label>
-                <input type="text" id="fullname" name="name" placeholder="ระบุชื่อผู้กล้า" required>
+                <input type="text" id="fullname" placeholder="ระบุชื่อผู้กล้า" required>
             </div>
             <div class="form-group">
                 <label>รุ่นที่</label>
-                <input type="number" id="batch" name="batch" placeholder="รุ่นที่บุกเบิกป่า" required>
+                <input type="number" id="batch" placeholder="รุ่นที่บุกเบิกป่า" required>
             </div>
             <div class="form-group">
                 <label>เบอร์โทรศัพท์</label>
-                <input type="tel" id="phone" name="phone" placeholder="การสื่อสารในป่า" required>
+                <input type="tel" id="phone" placeholder="การสื่อสารในป่า" required>
             </div>
             <button type="submit" id="submitBtn">บันทึกข้อมูล</button>
         </form>
@@ -96,6 +99,7 @@
     <div class="admin-trigger" onclick="goToAdmin()">แผงควบคุมแอดมิน</div>
 
     <script>
+        // แก้ไขจุดบกพร่องที่ 1: ตรวจสอบ URL นี้ให้เป็นตัวล่าสุดจากการ Deploy แบบ "Anyone"
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRzDCg6ixFRCSQwAL3WuDqaVZ2mPWWzMWsmnZhj3a7K3AEGkUbQBroQASIDC7SyqMS/exec';
 
         async function saveData(event) {
@@ -104,13 +108,24 @@
             btn.disabled = true;
             btn.innerText = "กำลังบันทึกข้อมูล...";
 
-            const formData = new FormData();
-            formData.append('name', document.getElementById('fullname').value);
-            formData.append('batch', document.getElementById('batch').value);
-            formData.append('phone', document.getElementById('phone').value);
+            // ปรับการส่งข้อมูลเป็นแบบ JSON เพื่อให้ตรงกับโค้ดฝั่ง Server
+            const payload = {
+                action: 'add',
+                name: document.getElementById('fullname').value,
+                batch: document.getElementById('batch').value,
+                phone: document.getElementById('phone').value
+            };
 
             try {
-                await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+                // ส่งแบบ JSON.stringify และใช้ mode: 'no-cors'
+                await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload) 
+                });
+
                 alert("บันทึกข้อมูลเข้าสู่พงไพรเรียบร้อย!");
                 document.getElementById('alumniForm').reset();
             } catch (error) {
@@ -133,5 +148,3 @@
     </script>
 </body>
 </html>
-
-
