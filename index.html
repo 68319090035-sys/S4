@@ -32,6 +32,14 @@
         }
         button:hover { opacity: 0.9; transform: scale(1.02); }
         button:disabled { background: #666; opacity: 0.7; cursor: not-allowed; }
+        
+        /* ปุ่มเข้าหน้าแอดมินมุมล่างซ้าย */
+        .admin-trigger { 
+            position: fixed; bottom: 20px; left: 20px; color: rgba(255,255,255,0.4); 
+            cursor: pointer; font-size: 13px; background: none; border: 1px solid rgba(255,255,255,0.1); 
+            padding: 5px 10px; border-radius: 5px; z-index: 999; text-decoration: none;
+        }
+        .admin-trigger:hover { color: white; background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -51,8 +59,11 @@
         </form>
     </div>
 
+    <a href="javascript:void(0)" class="admin-trigger" onclick="goToAdmin()">ระบบแอดมิน</a>
+
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxenJW7x8Tt-L60AUXUTBxGNhAIDHtWq6IPXrm0LJVoO0LoPsAYqwozO5DQ6kCrMh91/exec';
+        
         const form = document.getElementById('registrationForm');
         const btn = document.getElementById('btnSubmit');
 
@@ -66,18 +77,26 @@
                 body: new FormData(form) 
             })
             .then(response => {
-                alert("บันทึกข้อมูลเรียบร้อยแล้ว!");
+                alert("บันทึกข้อมูลเข้าพงไพรเรียบร้อยแล้ว!");
                 form.reset();
             })
             .catch(error => {
                 alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
-                console.error('Error!', error.message);
             })
             .finally(() => {
                 btn.disabled = false;
                 btn.innerText = "บันทึกข้อมูลเข้าพงไพร";
             });
         });
+
+        function goToAdmin() {
+            const pass = prompt("รหัสผ่านผู้ดูแล:");
+            if(pass === "777") {
+                window.location.href = "admin.html";
+            } else if (pass !== null) {
+                alert("รหัสผ่านไม่ถูกต้อง");
+            }
+        }
     </script>
 </body>
 </html>
