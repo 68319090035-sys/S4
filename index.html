@@ -9,8 +9,8 @@
 
         body {
             font-family: 'Kanit', sans-serif;
-            /* แก้ไขจุดบกพร่องที่ 2: เปลี่ยนจากลิงก์ Script เป็นลิงก์รูปภาพป่าจริงๆ */
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+            /* พื้นหลังป่าแบบคมชัด พร้อมเลเยอร์สีเขียวเข้ม */
+            background: linear-gradient(rgba(13, 39, 15, 0.7), rgba(0, 0, 0, 0.6)), 
                         url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071'); 
             background-size: cover;
             background-position: center;
@@ -24,91 +24,161 @@
             position: relative;
         }
 
-        /* เอฟเฟกต์ใบไม้ร่วง */
+        /* เอฟเฟกต์ใบไม้ร่วงแบบนุ่มนวล */
         @keyframes leaf-fall {
-            0% { transform: translateY(-10%) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+            0% { transform: translateY(-10%) rotate(0deg) translateX(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(720deg) translateX(50px); opacity: 0; }
         }
-        .leaf { position: absolute; top: -10%; color: #a2cf6e; font-size: 1.5em; user-select: none; z-index: 1; animation: leaf-fall linear infinite; }
+        .leaf { 
+            position: absolute; 
+            top: -10%; 
+            color: #a2cf6e; 
+            font-size: 1.8em; 
+            user-select: none; 
+            z-index: 1; 
+            animation: leaf-fall linear infinite; 
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+        }
 
         .container {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            padding: 35px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px); /* เอฟเฟกต์กระจกฝ้า */
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px;
             border-radius: 30px;
-            border: 1px solid rgba(162, 207, 110, 0.3);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(162, 207, 110, 0.4);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             width: 90%;
-            max-width: 400px;
+            max-width: 420px;
             z-index: 10;
             color: white;
+            text-align: center;
         }
 
-        h2 { text-align: center; color: #a2cf6e; margin-bottom: 25px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #a2cf6e; }
+        h2 { 
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #a2cf6e; 
+            margin-bottom: 30px; 
+            text-shadow: 0 0 15px rgba(162, 207, 110, 0.5);
+        }
+
+        .form-group { text-align: left; margin-bottom: 20px; }
+        
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #c5e1a5; 
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
         
         input {
-            width: 100%; padding: 12px; border: 1px solid #5d8a39;
-            border-radius: 10px; box-sizing: border-box; background: rgba(255, 255, 255, 0.1);
-            color: white; transition: 0.3s;
+            width: 100%; 
+            padding: 14px; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px; 
+            box-sizing: border-box; 
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff; 
+            font-size: 1em;
+            transition: all 0.3s ease;
         }
-        input::placeholder { color: rgba(255,255,255,0.5); }
-        input:focus { outline: none; border-color: #a2cf6e; background: rgba(255,255,255,0.2); }
+
+        input::placeholder { color: rgba(255,255,255,0.4); }
+        
+        input:focus { 
+            outline: none; 
+            border-color: #a2cf6e; 
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(162, 207, 110, 0.3);
+        }
 
         button {
-            width: 100%; padding: 14px; background: #4caf50;
-            color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 18px; font-weight: bold;
-            margin-top: 15px; transition: 0.3s;
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white; 
+            border: none; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            font-size: 1.1em; 
+            font-weight: 600;
+            margin-top: 10px; 
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
-        button:hover { background: #45a049; transform: scale(1.02); }
+
+        button:hover { 
+            background: linear-gradient(135deg, #66bb6a 0%, #388e3c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        button:active { transform: translateY(1px); }
 
         .admin-trigger {
-            position: fixed; bottom: 20px; right: 20px; background: rgba(0, 0, 0, 0.5);
-            color: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 12px; z-index: 100;
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            background: rgba(0, 0, 0, 0.4);
+            color: rgba(255, 255, 255, 0.4); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 15px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 11px; 
+            z-index: 100;
+            transition: 0.3s;
+        }
+        .admin-trigger:hover { 
+            background: rgba(162, 207, 110, 0.2);
+            color: #a2cf6e;
+            border-color: #a2cf6e;
         }
     </style>
 </head>
 <body>
 
-    <div class="leaf" style="left:10%; animation-duration:7s;">🌿</div>
-    <div class="leaf" style="left:30%; animation-duration:10s;">🍃</div>
-    <div class="leaf" style="left:70%; animation-duration:8s;">🌱</div>
+    <div class="leaf" style="left:5%; animation-duration:8s; animation-delay: 1s;">🌿</div>
+    <div class="leaf" style="left:25%; animation-duration:12s; animation-delay: 0s;">🍃</div>
+    <div class="leaf" style="left:50%; animation-duration:10s; animation-delay: 3s;">🌱</div>
+    <div class="leaf" style="left:75%; animation-duration:15s; animation-delay: 2s;">🌿</div>
+    <div class="leaf" style="left:90%; animation-duration:9s; animation-delay: 5s;">🍃</div>
 
     <div class="container">
-        <h2>🌳 ลงทะเบียนศิษย์เก่า 🌳</h2>
+        <h2>🌳 ศิษย์เก่า AMAZON 🌳</h2>
         <form id="alumniForm" onsubmit="saveData(event)">
             <div class="form-group">
                 <label>ชื่อ-นามสกุล</label>
-                <input type="text" id="fullname" placeholder="ระบุชื่อผู้กล้า" required>
+                <input type="text" id="fullname" placeholder="ชื่อผู้กล้าในพงไพร" required>
             </div>
             <div class="form-group">
                 <label>รุ่นที่</label>
-                <input type="number" id="batch" placeholder="รุ่นที่บุกเบิกป่า" required>
+                <input type="number" id="batch" placeholder="ระบุรุ่นที่บุกเบิก" required>
             </div>
             <div class="form-group">
                 <label>เบอร์โทรศัพท์</label>
-                <input type="tel" id="phone" placeholder="การสื่อสารในป่า" required>
+                <input type="tel" id="phone" placeholder="ช่องทางติดต่อสื่อสาร" required>
             </div>
-            <button type="submit" id="submitBtn">บันทึกข้อมูล</button>
+            <button type="submit" id="submitBtn">บันทึกข้อมูลเข้าสู่ป่า</button>
         </form>
     </div>
 
     <div class="admin-trigger" onclick="goToAdmin()">แผงควบคุมแอดมิน</div>
 
     <script>
-        // แก้ไขจุดบกพร่องที่ 1: ตรวจสอบ URL นี้ให้เป็นตัวล่าสุดจากการ Deploy แบบ "Anyone"
+        // *** ตรวจสอบ URL นี้ให้เป็นตัวล่าสุดจากการ Deploy แบบ "Anyone" ***
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRzDCg6ixFRCSQwAL3WuDqaVZ2mPWWzMWsmnZhj3a7K3AEGkUbQBroQASIDC7SyqMS/exec';
 
         async function saveData(event) {
             event.preventDefault();
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.innerText = "กำลังบันทึกข้อมูล...";
+            btn.innerText = "กำลังนำข้อมูลฝังลงดิน...";
 
-            // ปรับการส่งข้อมูลเป็นแบบ JSON เพื่อให้ตรงกับโค้ดฝั่ง Server
             const payload = {
                 action: 'add',
                 name: document.getElementById('fullname').value,
@@ -117,7 +187,6 @@
             };
 
             try {
-                // ส่งแบบ JSON.stringify และใช้ mode: 'no-cors'
                 await fetch(SCRIPT_URL, { 
                     method: 'POST', 
                     mode: 'no-cors',
@@ -133,12 +202,12 @@
                 console.error(error);
             } finally {
                 btn.disabled = false;
-                btn.innerText = "บันทึกข้อมูล";
+                btn.innerText = "บันทึกข้อมูลเข้าสู่ป่า";
             }
         }
 
         function goToAdmin() {
-            const pw = prompt("กรุณาใส่รหัสผ่านเพื่อเข้าสู่โหมด Admin:");
+            const pw = prompt("ยืนยันตัวตนผู้พิทักษ์ (Password):");
             if(pw === "777") {
                 window.location.href = "admin.html";
             } else if (pw !== null) {
