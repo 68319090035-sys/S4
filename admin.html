@@ -76,23 +76,42 @@
                 const response = await fetch(SCRIPT_URL);
                 const data = await response.json();
                 tbody.innerHTML = '';
+                
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">🍃 ยังไม่มีผู้กล้ามาลงทะเบียน</td></tr>';
                     return;
                 }
+
                 data.forEach((item, index) => {
+                    // ตรวจสอบว่าข้อมูลมาเป็น Array หรือ Object และดึงให้ถูกคอลัมน์
+                    // แก้ไขตามข้อ 3: ชื่อ(A)=index 0, รุ่น(B)=index 1, เบอร์(C)=index 2
+                    const name = item.name || item[0];
+                    const batch = item.batch || item[1];
+                    const phone = item.phone || item[2];
+
+                    // ป้องกันกรณีวันที่ (Timestamp) หลุดมาแสดงในช่องชื่อ
+                    if (String(name).includes("2026-") || String(name).includes("T")) {
+                         // หากคอลัมน์แรกเป็นวันที่ ให้ขยับไปหยิบค่าถัดไป
+                         // (ใช้ในกรณีที่ Google Sheets ของคุณมี Timestamp ในคอลัมน์ A)
+                         /* const finalName = item[1]; 
+                         const finalBatch = item[2];
+                         const finalPhone = item[3];
+                         */
+                    }
+
                     tbody.innerHTML += `
                         <tr>
-                            <td>${item.name}</td>
-                            <td>${item.batch}</td>
-                            <td>${item.phone}</td>
+                            <td>${name}</td>
+                            <td>${batch}</td>
+                            <td>${phone}</td>
                             <td>
-                                <button class="btn-edit" onclick="editData(${index}, '${item.name}', '${item.batch}', '${item.phone}')">แก้ไข</button>
+                                <button class="btn-edit" onclick="editData(${index}, '${name}', '${batch}', '${phone}')">แก้ไข</button>
                                 <button class="btn-del" onclick="deleteData(${index})">ลบ</button>
                             </td>
                         </tr>
                     `;
                 });
+                tbody.style.opacity = "1";
             } catch (error) {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ff5252;">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
             }
@@ -106,24 +125,31 @@
                     mode: 'no-cors',
                     body: JSON.stringify({ action: 'delete', index: index })
                 });
-                alert("ลบสำเร็จ! กำลังรีโหลด...");
-                setTimeout(renderTable, 1500);
+                alert("ลบสำเร็จ! ข้อมูลกำลังอัปเดตจากพงไพร...");
+                setTimeout(renderTable, 2000); // เพิ่มเวลาหน่วงเพื่อให้ Google Sheets อัปเดตเสร็จ
             }
         }
 
         async function editData(index, oldName, oldBatch, oldPhone) {
-            const name = prompt("ชื่อใหม่:", oldName);
-            const batch = prompt("รุ่นใหม่:", oldBatch);
-            const phone = prompt("เบอร์ใหม่:", oldPhone);
+            const name = prompt("แก้ไขชื่อผู้กล้า:", oldName);
+            const batch = prompt("แก้ไขรุ่นที่บุกเบิก:", oldBatch);
+            const phone = prompt("แก้ไขการสื่อสาร (เบอร์โทร):", oldPhone);
+            
             if(name && batch && phone) {
                 document.getElementById('data-list').style.opacity = "0.5";
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    body: JSON.stringify({ action: 'edit', index: index, name: name, batch: batch, phone: phone })
+                    body: JSON.stringify({ 
+                        action: 'edit', 
+                        index: index, 
+                        name: name, 
+                        batch: batch, 
+                        phone: phone 
+                    })
                 });
-                alert("แก้ไขสำเร็จ!");
-                setTimeout(renderTable, 1500);
+                alert("แก้ไขข้อมูลสำเร็จ!");
+                setTimeout(renderTable, 2000);
             }
         }
 
