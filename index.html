@@ -5,128 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ศิษย์เก่า - Amazon Jungle</title>
     <style>
-        @import url('https://script.google.com/macros/s/AKfycbxenJW7x8Tt-L60AUXUTBxGNhAIDHtWq6IPXrm0LJVoO0LoPsAYqwozO5DQ6kCrMh91/exec');
-
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
         body {
             font-family: 'Kanit', sans-serif;
             background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                        url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            position: relative;
+                        url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden;
         }
-
-        /* เอฟเฟกต์ใบไม้ร่วง */
-        @keyframes leaf-fall {
-            0% { transform: translateY(-10%) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-        .leaf { position: absolute; top: -10%; color: #2d5a27; font-size: 1.2em; user-select: none; z-index: 1; animation: leaf-fall linear infinite; }
-
         .container {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            padding: 35px;
-            border-radius: 30px;
-            border: 2px solid rgba(139, 195, 74, 0.3);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            z-index: 10;
-            color: white;
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(15px);
+            padding: 35px; border-radius: 30px; border: 2px solid rgba(139, 195, 74, 0.3);
+            width: 95%; max-width: 400px; color: white; text-align: center;
         }
-
-        h2 { text-align: center; color: #a2cf6e; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 25px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #e0e0e0; }
-        
+        h2 { color: #a2cf6e; margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
         input {
             width: 100%; padding: 12px; border: none; border-bottom: 2px solid #5d8a39;
             border-radius: 8px; box-sizing: border-box; background: rgba(255, 255, 255, 0.9);
-            color: #1b3022; transition: 0.3s;
+            color: #1b3022; font-family: 'Kanit', sans-serif;
         }
-
         button {
             width: 100%; padding: 14px; background: linear-gradient(135deg, #2d5a27 0%, #4caf50 100%);
             color: white; border: none; border-radius: 50px; cursor: pointer; font-size: 18px; font-weight: bold;
+            transition: 0.3s; font-family: 'Kanit', sans-serif;
         }
-
-        /* ปุ่ม Admin ลับมุมขวาล่าง */
-        .admin-trigger {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            color: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-            z-index: 100;
-        }
-        .admin-trigger:hover { background: rgba(0, 0, 0, 0.6); color: white; }
+        button:hover { opacity: 0.9; transform: scale(1.02); }
+        button:disabled { background: #666; opacity: 0.7; cursor: not-allowed; }
     </style>
 </head>
 <body>
-
-    <div class="leaf" style="left:5%; animation-duration:7s;">🌿</div>
-    <div class="leaf" style="left:45%; animation-duration:8s;">🌱</div>
-    <div class="leaf" style="left:85%; animation-duration:9s;">🍃</div>
-
     <div class="container">
         <h2>🌳 ลงทะเบียนศิษย์เก่า 🌳</h2>
-        <div class="form-group">
-            <label>ชื่อ-นามสกุล</label>
-            <input type="text" id="fullname" placeholder="ระบุชื่อผู้กล้า" required>
-        </div>
-        <div class="form-group">
-            <label>รุ่นที่</label>
-            <input type="number" id="batch" placeholder="รุ่นที่บุกเบิกป่า" required>
-        </div>
-        <div class="form-group">
-            <label>เบอร์โทรศัพท์</label>
-            <input type="tel" id="phone" placeholder="การสื่อสารในป่า" required>
-        </div>
-        <button onclick="saveData()">บันทึกข้อมูล</button>
+        <form id="registrationForm">
+            <div class="form-group">
+                <input type="text" name="name" placeholder="ชื่อ-นามสกุล" required>
+            </div>
+            <div class="form-group">
+                <input type="number" name="batch" placeholder="รุ่นที่" required>
+            </div>
+            <div class="form-group">
+                <input type="tel" name="phone" placeholder="เบอร์โทรศัพท์" required>
+            </div>
+            <button type="submit" id="btnSubmit">บันทึกข้อมูลเข้าพงไพร</button>
+        </form>
     </div>
 
-    <div class="admin-trigger" onclick="goToAdmin()">แผงควบคุมแอดมิน</div>
-
     <script>
-        function saveData() {
-            const name = document.getElementById('fullname').value;
-            const batch = document.getElementById('batch').value;
-            const phone = document.getElementById('phone').value;
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxenJW7x8Tt-L60AUXUTBxGNhAIDHtWq6IPXrm0LJVoO0LoPsAYqwozO5DQ6kCrMh91/exec';
+        const form = document.getElementById('registrationForm');
+        const btn = document.getElementById('btnSubmit');
 
-            if(!name || !batch || !phone) return alert("กรุณากรอกข้อมูลให้ครบ");
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.innerText = "กำลังนำส่งข้อมูล...";
 
-            let alumniData = JSON.parse(localStorage.getItem('alumni')) || [];
-            alumniData.push({ name, batch, phone });
-            localStorage.setItem('alumni', JSON.stringify(alumniData));
-
-            alert("บันทึกข้อมูลเข้าสู่พงไพรเรียบร้อย!");
-            location.reload(); 
-        }
-
-        function goToAdmin() {
-            const pw = prompt("กรุณาใส่รหัสผ่านเพื่อเข้าสู่โหมด Admin:");
-            if(pw === "777") {
-                window.location.href = "admin.html";
-            } else {
-                alert("รหัสผ่านไม่ถูกต้อง!");
-            }
-        }
+            fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: new FormData(form) 
+            })
+            .then(response => {
+                alert("บันทึกข้อมูลเรียบร้อยแล้ว!");
+                form.reset();
+            })
+            .catch(error => {
+                alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+                console.error('Error!', error.message);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = "บันทึกข้อมูลเข้าพงไพร";
+            });
+        });
     </script>
 </body>
-
 </html>
