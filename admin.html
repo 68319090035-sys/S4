@@ -9,7 +9,7 @@
 
         body {
             font-family: 'Kanit', sans-serif;
-            background: #1b3022; /* สีเขียวเข้มขรึมๆ */
+            background: #1b3022;
             color: white;
             margin: 0;
             padding: 20px;
@@ -68,24 +68,18 @@
     </div>
 
     <script>
-        // URL ของ Google Apps Script ล่าสุดที่คุณให้มา
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyB6ZhCyYP6T5STcQDoOv4lh78oWLgDxb2Ow6066ncLA4KppFD77fqeL-dTNp7UiRk/exec';
 
-        // 1. ฟังก์ชันดึงข้อมูลมาแสดงผล (Read)
         async function renderTable() {
             const tbody = document.getElementById('data-list');
-            
             try {
                 const response = await fetch(SCRIPT_URL);
                 const data = await response.json();
-                
                 tbody.innerHTML = '';
-                
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">🍃 ยังไม่มีผู้กล้ามาลงทะเบียน</td></tr>';
                     return;
                 }
-
                 data.forEach((item, index) => {
                     tbody.innerHTML += `
                         <tr>
@@ -100,65 +94,39 @@
                     `;
                 });
             } catch (error) {
-                console.error('Error:', error);
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ff5252;">❌ เกิดข้อผิดพลาดในการเชื่อมต่อกับป่า</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ff5252;">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
             }
         }
 
-        // 2. ฟังก์ชันลบข้อมูล (Delete)
         async function deleteData(index) {
-            if(confirm("ยืนยันที่จะลบรายชื่อนี้ออกจากบันทึกพงไพร?")) {
-                const tbody = document.getElementById('data-list');
-                tbody.style.opacity = "0.5";
-
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors', // ใช้ no-cors เพื่อให้รองรับการเรียกจากเครื่องอื่น
-                        body: JSON.stringify({ action: 'delete', index: index })
-                    });
-                    
-                    alert("ลบข้อมูลสำเร็จ! (รอสักครู่เพื่ออัปเดตตาราง)");
-                    setTimeout(renderTable, 1500); // หน่วงเวลาเล็กน้อยเพื่อให้ Google Update ข้อมูล
-                } catch (error) {
-                    alert("เกิดข้อผิดพลาดในการลบ");
-                    tbody.style.opacity = "1";
-                }
+            if(confirm("ยืนยันที่จะลบรายชื่อนี้?")) {
+                document.getElementById('data-list').style.opacity = "0.5";
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'delete', index: index })
+                });
+                alert("ลบสำเร็จ! กำลังรีโหลด...");
+                setTimeout(renderTable, 1500);
             }
         }
 
-        // 3. ฟังก์ชันแก้ไขข้อมูล (Update)
         async function editData(index, oldName, oldBatch, oldPhone) {
-            const newName = prompt("แก้ไขชื่อผู้กล้า:", oldName);
-            const newBatch = prompt("แก้ไขรุ่นที่บุกเบิก:", oldBatch);
-            const newPhone = prompt("แก้ไขการสื่อสารในป่า (เบอร์โทร):", oldPhone);
-
-            if(newName && newBatch && newPhone) {
-                const tbody = document.getElementById('data-list');
-                tbody.style.opacity = "0.5";
-
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        body: JSON.stringify({ 
-                            action: 'edit', 
-                            index: index, 
-                            name: newName, 
-                            batch: newBatch, 
-                            phone: newPhone 
-                        })
-                    });
-                    alert("อัปเดตข้อมูลสำเร็จ!");
-                    setTimeout(renderTable, 1500);
-                } catch (error) {
-                    alert("เกิดข้อผิดพลาดในการแก้ไข");
-                    tbody.style.opacity = "1";
-                }
+            const name = prompt("ชื่อใหม่:", oldName);
+            const batch = prompt("รุ่นใหม่:", oldBatch);
+            const phone = prompt("เบอร์ใหม่:", oldPhone);
+            if(name && batch && phone) {
+                document.getElementById('data-list').style.opacity = "0.5";
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'edit', index: index, name: name, batch: batch, phone: phone })
+                });
+                alert("แก้ไขสำเร็จ!");
+                setTimeout(renderTable, 1500);
             }
         }
 
-        // เรียกใช้งานครั้งแรกเมื่อเปิดหน้าเว็บ
         window.onload = renderTable;
     </script>
 </body>
