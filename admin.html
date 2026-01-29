@@ -7,57 +7,47 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
         body { font-family: 'Kanit', sans-serif; background: #1b3022; color: white; padding: 20px; margin: 0; }
-        .container { background: rgba(0,0,0,0.5); padding: 30px; border-radius: 20px; border: 1px solid #a2cf6e; max-width: 900px; margin: 40px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { color: #a2cf6e; text-align: center; margin-top: 0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: rgba(255,255,255,0.05); }
-        th, td { padding: 15px; border-bottom: 1px solid #5d8a39; text-align: left; }
-        th { color: #a2cf6e; background: #2d5a27; }
-        .btn-edit { background: #ffc107; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; color: #000; font-weight: bold; margin-right: 5px; }
-        .btn-del { background: #ff5252; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-back { display: inline-block; margin-bottom: 10px; background: none; color: #a2cf6e; border: 1px solid #a2cf6e; padding: 8px 15px; border-radius: 20px; cursor: pointer; text-decoration: none; font-size: 14px; }
-        .btn-back:hover { background: #a2cf6e; color: #1b3022; }
-        tr:hover { background: rgba(255,255,255,0.1); }
-        .loading { text-align: center; padding: 20px; font-style: italic; color: #888; }
+        .container { background: rgba(0,0,0,0.5); padding: 30px; border-radius: 20px; border: 1px solid #a2cf6e; max-width: 900px; margin: 40px auto; }
+        h2 { color: #a2cf6e; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #5d8a39; text-align: left; }
+        th { background: #2d5a27; color: #a2cf6e; }
+        .btn-edit { background: #ffc107; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+        .btn-del { background: #ff5252; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .btn-back { color: #a2cf6e; text-decoration: none; border: 1px solid #a2cf6e; padding: 5px 15px; border-radius: 20px; display: inline-block; margin-bottom: 15px; }
+        .loading { text-align: center; padding: 20px; color: #888; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <a href="index.html" class="btn-back">← กลับหน้าลงทะเบียน</a>
-        <h2>🛠 ระบบจัดการข้อมูลศิษย์เก่า</h2>
+        <h2>🛠 รายชื่อศิษย์เก่าในพงไพร</h2>
         
-        <table id="adminTable">
+        <table>
             <thead>
                 <tr>
                     <th>ชื่อ-นามสกุล</th>
                     <th>รุ่น</th>
-                    <th>เบอร์โทรศัพท์</th>
+                    <th>เบอร์โทร</th>
                     <th>จัดการ</th>
                 </tr>
             </thead>
             <tbody id="data-list">
-                <tr><td colspan="4" class="loading">⏳ กำลังดึงข้อมูลจากพงไพร...</td></tr>
+                <tr><td colspan="4" class="loading">กำลังโหลดข้อมูล...</td></tr>
             </tbody>
         </table>
     </div>
 
     <script>
-        // ใช้ URL เดียวกับหน้า index.html
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxenJW7x8Tt-L60AUXUTBxGNhAIDHtWq6IPXrm0LJVoO0LoPsAYqwozO5DQ6kCrMh91/exec';
 
-        // 1. ฟังก์ชันดึงข้อมูลมาแสดงผล (doGet)
         async function loadData() {
             const tbody = document.getElementById('data-list');
             try {
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
                 tbody.innerHTML = '';
-                
-                if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">ไม่พบข้อมูลในพงไพร</td></tr>';
-                    return;
-                }
-
                 data.forEach((item, index) => {
                     tbody.innerHTML += `
                         <tr>
@@ -70,64 +60,28 @@
                             </td>
                         </tr>`;
                 });
-            } catch (e) { 
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ff5252;">⚠️ โหลดข้อมูลไม่สำเร็จ หรือชีตว่างเปล่า</td></tr>'; 
-            }
+            } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="loading">ไม่สามารถดึงข้อมูลได้</td></tr>'; }
         }
 
-        // 2. ฟังก์ชันส่งคำสั่งไปทำงาน (doPost)
         async function sendAction(payload) {
-            try {
-                // ใช้โหมด no-cors เพื่อเลี่ยงปัญหา Security ของ Google Apps Script
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', 
-                    body: JSON.stringify(payload)
-                });
-                return true;
-            } catch (e) {
-                console.error(e);
-                return false;
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            alert("ดำเนินการสำเร็จ (ระบบกำลังอัปเดตข้อมูลสักครู่)");
+            setTimeout(loadData, 1500);
+        }
+
+        function deleteData(index) {
+            if (confirm("ลบรายชื่อนี้ใช่ไหม?")) sendAction({ action: 'delete', index: index });
+        }
+
+        function editData(index, n, b, p) {
+            const name = prompt("ชื่อใหม่:", n);
+            const batch = prompt("รุ่นใหม่:", b);
+            const phone = prompt("เบอร์ใหม่:", p);
+            if (name && batch && phone) {
+                sendAction({ action: 'edit', index: index, name: name, batch: batch, phone: phone });
             }
         }
 
-        // 3. ฟังก์ชันลบข้อมูล
-        async function deleteData(index) {
-            if (confirm("ยืนยันการลบรายชื่อนี้ออกจากป่า?")) {
-                const tbody = document.getElementById('data-list');
-                tbody.innerHTML = '<tr><td colspan="4" class="loading">正在ลบข้อมูล...</td></tr>';
-                
-                await sendAction({ action: 'delete', index: index });
-                
-                alert("ส่งคำสั่งลบแล้ว ระบบจะรีเฟรชข้อมูลใน 2 วินาที");
-                setTimeout(loadData, 2000);
-            }
-        }
-
-        // 4. ฟังก์ชันแก้ไขข้อมูล
-        async function editData(index, oldName, oldBatch, oldPhone) {
-            const newName = prompt("แก้ไขชื่อ-นามสกุล:", oldName);
-            const newBatch = prompt("แก้ไขรุ่นที่:", oldBatch);
-            const newPhone = prompt("แก้ไขเบอร์โทรศัพท์:", oldPhone);
-
-            if (newName && newBatch && newPhone) {
-                const tbody = document.getElementById('data-list');
-                tbody.innerHTML = '<tr><td colspan="4" class="loading">กำลังบันทึกการแก้ไข...</td></tr>';
-
-                await sendAction({
-                    action: 'edit',
-                    index: index,
-                    name: newName,
-                    batch: newBatch,
-                    phone: newPhone
-                });
-
-                alert("ส่งคำสั่งแก้ไขแล้ว ระบบจะรีเฟรชข้อมูลใน 2 วินาที");
-                setTimeout(loadData, 2000);
-            }
-        }
-
-        // โหลดข้อมูลทันทีเมื่อเปิดหน้า
         window.onload = loadData;
     </script>
 </body>
