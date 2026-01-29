@@ -8,14 +8,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
         body { font-family: 'Kanit', sans-serif; background: #1b3022; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { background: rgba(0, 0, 0, 0.5); padding: 30px; border-radius: 20px; border: 1px solid #a2cf6e; width: 95%; max-width: 1000px; }
-        h2 { text-align: center; color: #a2cf6e; margin-bottom: 20px; }
+        h2 { text-align: center; color: #a2cf6e; margin-bottom: 30px; }
         table { width: 100%; border-collapse: collapse; background: rgba(255, 255, 255, 0.05); }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #5d8a39; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #5d8a39; }
         th { background: #2d5a27; color: #a2cf6e; }
-        .btn-del { background: #ff5252; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
-        .btn-edit { background: #ffc107; color: black; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px; }
+        tr:hover { background: rgba(255, 255, 255, 0.1); }
+        .btn-del { background: #ff5252; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+        .btn-edit { background: #ffc107; color: black; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-right: 5px; }
         .btn-back { margin-bottom: 20px; background: none; color: #a2cf6e; border: 1px solid #a2cf6e; padding: 10px 20px; cursor: pointer; border-radius: 20px; text-decoration: none; display: inline-block; }
-        .loading { text-align: center; padding: 20px; color: #a2cf6e; }
+        .btn-back:hover { background: #a2cf6e; color: #1b3022; }
+        .loading { text-align: center; padding: 20px; color: #a2cf6e; font-size: 1.2em; }
     </style>
 </head>
 <body>
@@ -26,7 +28,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>วันที่</th>
+                        <th>วันที่ลงทะเบียน</th>
                         <th>ชื่อ-นามสกุล</th>
                         <th>รุ่น</th>
                         <th>เบอร์โทรศัพท์</th>
@@ -34,59 +36,48 @@
                     </tr>
                 </thead>
                 <tbody id="data-list">
-                    <tr><td colspan="5" class="loading">⏳ กำลังดึงข้อมูล...</td></tr>
+                    <tr><td colspan="5" class="loading">⏳ กำลังดึงข้อมูลจากพงไพร...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
+        // ใช้ URL ที่คุณส่งมาล่าสุด
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyB6ZhCyYP6T5STcQDoOv4lh78oWLgDxb2Ow6066ncLA4KppFD77fqeL-dTNp7UiRk/exec';
 
         async function renderTable() {
             const tbody = document.getElementById('data-list');
             try {
                 const response = await fetch(SCRIPT_URL);
-                const rawData = await response.json();
+                const data = await response.json();
                 tbody.innerHTML = '';
                 
-                if (!rawData || rawData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">🍃 ยังไม่มีข้อมูลในพงไพร</td></tr>';
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">🍃 ยังไม่มีผู้กล้ามาลงทะเบียน</td></tr>';
                     return;
                 }
 
-                // ข้ามแถวแรกถ้าเป็นหัวตาราง (เช่น คำว่า "ชื่อ", "รุ่น")
-                const data = (Array.isArray(rawData[0]) && isNaN(rawData[0][1])) ? rawData.slice(1) : rawData;
-
+                // เริ่มลูปข้อมูล (ข้าม Header แถวแรกถ้ามี)
                 data.forEach((item, index) => {
-                    let date = "-", name = "-", batch = "-", phone = "-";
-
-                    if (Array.isArray(item)) {
-                        // ระบบค้นหาอัตโนมัติ: ช่องไหนเป็นวันที่, ช่องไหนเป็นชื่อ
-                        item.forEach(val => {
-                            let s = String(val);
-                            if (s.includes('-') && s.includes('T')) {
-                                let d = new Date(val);
-                                date = d.toLocaleDateString('th-TH') + ' ' + d.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
-                            }
-                        });
-                        
-                        // กฎพื้นฐาน: เรียงตามลำดับความกว้างของข้อมูล (ถ้ามีวันที่อยู่ช่อง 0)
-                        if (date !== "-") {
-                            name = item[1] || "-";
-                            batch = item[2] || "-";
-                            phone = item[3] || "-";
-                        } else {
-                            name = item[0] || "-";
-                            batch = item[1] || "-";
-                            phone = item[2] || "-";
-                        }
+                    // กำหนดตำแหน่งตามไฟล์ Script ของคุณ (รูปที่ 2)
+                    // item[0] = วันที่, item[1] = ชื่อ, item[2] = รุ่น, item[3] = เบอร์
+                    
+                    let dateDisplay = "ไม่ระบุ";
+                    if (item[0]) {
+                        const d = new Date(item[0]);
+                        // จัดรูปแบบวันที่ไทย
+                        dateDisplay = isNaN(d) ? item[0] : d.toLocaleDateString('th-TH') + ' ' + d.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
                     }
+
+                    const name = item[1] || "ไม่มีข้อมูล";
+                    const batch = item[2] || "-";
+                    const phone = item[3] || "-";
 
                     tbody.innerHTML += `
                         <tr>
-                            <td style="font-size:0.85em; color:#888;">${date}</td>
-                            <td>**${name}**</td>
+                            <td style="color: #a2cf6e; font-size: 0.85em;">${dateDisplay}</td>
+                            <td>${name}</td>
                             <td>${batch}</td>
                             <td>${phone}</td>
                             <td>
@@ -96,24 +87,40 @@
                         </tr>
                     `;
                 });
-            } catch (e) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">❌ เชื่อมต่อไม่ได้ (ตรวจสอบการ Deploy ของ Google Script)</td></tr>';
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ff5252;">❌ ไม่สามารถโหลดข้อมูลได้</td></tr>';
             }
         }
 
-        async function deleteData(idx) {
-            if(!confirm("ลบรายชื่อนี้?")) return;
-            await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body: JSON.stringify({action:'delete', index:idx}) });
-            alert("ลบแล้ว! กรุณารอ 2 วินาที");
-            setTimeout(renderTable, 2000);
+        async function deleteData(index) {
+            if(confirm("ยืนยันที่จะลบรายชื่อนี้?")) {
+                document.getElementById('data-list').style.opacity = "0.5";
+                // ส่ง index ไปลบ (ใน Script ต้องมั่นใจว่าลบถูกแถว index + 2)
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'delete', index: index })
+                });
+                alert("ลบสำเร็จ!");
+                setTimeout(renderTable, 1500);
+            }
         }
 
-        async function editData(idx, n, b, p) {
-            const nn = prompt("ชื่อใหม่:", n), nb = prompt("รุ่นใหม่:", b), np = prompt("เบอร์ใหม่:", p);
-            if(!nn || !nb || !np) return;
-            await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body: JSON.stringify({action:'edit', index:idx, name:nn, batch:nb, phone:np}) });
-            alert("แก้ไขแล้ว!");
-            setTimeout(renderTable, 2000);
+        async function editData(index, oldName, oldBatch, oldPhone) {
+            const name = prompt("ชื่อใหม่:", oldName);
+            const batch = prompt("รุ่นใหม่:", oldBatch);
+            const phone = prompt("เบอร์ใหม่:", oldPhone);
+            if(name && batch && phone) {
+                document.getElementById('data-list').style.opacity = "0.5";
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'edit', index: index, name: name, batch: batch, phone: phone })
+                });
+                alert("แก้ไขสำเร็จ!");
+                setTimeout(renderTable, 1500);
+            }
         }
 
         window.onload = renderTable;
